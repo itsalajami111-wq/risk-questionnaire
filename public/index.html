@@ -1,0 +1,522 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hoxton Wealth — Risk Questionnaire</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --card:#F5F7FA;
+      --text:#1F2937;
+      --muted:#6B7280;
+      --border:#E5E7EB;
+      --primary:#0B3D3F;
+      --shadow:0 10px 24px rgba(0,0,0,.07);
+      --teal:#2AA7A1;
+      --coral:#E06B5A;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{ width:min(900px,92vw); margin:26px auto 60px; }
+    .header{
+      background:var(--primary);
+      color:#fff;
+      border-radius:16px;
+      padding:14px 16px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      box-shadow:var(--shadow);
+    }
+    .header img{ height:32px; width:auto; }
+    .header .t1{ font-weight:800; letter-spacing:.2px; }
+    .header .t2{ font-size:12px; opacity:.9; }
+
+    .card{
+      margin-top:14px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:16px;
+      box-shadow:var(--shadow);
+    }
+    h1{ margin:6px 0 6px; color:var(--primary); font-size:26px; }
+    h2{ margin:8px 0 10px; font-size:18px; }
+    p{ margin:0; color:var(--muted); line-height:1.5; }
+
+    .btn{
+      border:0;
+      background:var(--primary);
+      color:#fff;
+      padding:12px 14px;
+      border-radius:12px;
+      font-size:15px;
+      font-weight:800;
+      cursor:pointer;
+      width:100%;
+    }
+    .btn:hover{ filter:brightness(1.05); }
+    .btn.ghost{
+      background:transparent;
+      color:var(--primary);
+      border:1px solid rgba(11,61,63,.35);
+    }
+
+    .row{ display:flex; gap:12px; flex-wrap:wrap; }
+    .row > *{ flex:1; min-width:200px; }
+
+    .progress{
+      height:8px; background:#E5E7EB; border-radius:999px; overflow:hidden; margin:10px 0 14px;
+    }
+    .progress > div{
+      height:100%; width:0%;
+      background:linear-gradient(90deg,#0C9B8A,#0AAE6F);
+    }
+
+    .option{
+      display:block;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:12px;
+      padding:12px 12px;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--primary);
+    }
+    .option input{ margin-right:10px; transform:scale(1.1); }
+    .option:hover{ border-color:rgba(11,61,63,.35); }
+
+    .meta{
+      display:flex; justify-content:space-between; align-items:center;
+      font-size:12px; color:var(--muted); font-weight:800;
+      margin-bottom:8px;
+    }
+    .meta button{
+      background:transparent; border:0; color:var(--muted); cursor:pointer; font-weight:800;
+      padding:6px 8px; border-radius:10px;
+    }
+    .meta button:hover{ background:rgba(11,61,63,.06); color:var(--primary); }
+
+    label{ display:flex; flex-direction:column; gap:6px; font-size:14px; font-weight:700; color:#374151; }
+    input[type="number"]{
+      width:100%;
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:10px 12px;
+      font-size:15px;
+      background:#fff;
+    }
+    .errorBox{
+      display:none;
+      margin-top:12px;
+      background:#FEF2F2;
+      border:1px solid #FCA5A5;
+      color:#991B1B;
+      padding:10px 12px;
+      border-radius:12px;
+      font-size:14px;
+    }
+
+    .legend{
+      display:flex; gap:14px; flex-wrap:wrap;
+      margin-top:10px; font-size:12px; color:var(--muted);
+    }
+    .dot{ width:10px; height:10px; border-radius:999px; display:inline-block; margin-right:6px; }
+    .dot.stocks{ background:#E06B5A; }
+    .dot.bonds{ background:#3A91C6; }
+    .dot.res{ background:#8B5CF6; }
+
+    .bar{
+      height:14px; border-radius:999px; overflow:hidden; background:#E5E7EB;
+      display:flex; margin-top:8px;
+    }
+    .bar > div{ height:100%; }
+    .bar .stocks{ background:#E06B5A; }
+    .bar .bonds{ background:#3A91C6; }
+    .bar .res{ background:#8B5CF6; }
+
+    @media (max-width:720px){
+      .meta{ flex-direction:column; align-items:flex-start; gap:6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- Magnet Header (same for all tools) -->
+    <div class="header">
+      <img src="/hoxton-logo.png" alt="Hoxton Wealth">
+      <div>
+        <div class="t1">Hoxton Wealth</div>
+        <div class="t2">Risk Questionnaire</div>
+      </div>
+    </div>
+
+    <!-- STEP: Welcome -->
+    <div id="welcome" class="card">
+      <h1>Discover Your Investment Profile</h1>
+      <p>Answer 11 questions to understand your risk tolerance and get a personalised asset allocation recommendation.</p>
+
+      <div style="margin-top:14px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;">
+        <ul style="margin:0;padding-left:18px;color:#374151;">
+          <li>Takes about 3 minutes</li>
+          <li>Get your personalised risk profile</li>
+          <li>See your recommended asset allocation</li>
+        </ul>
+      </div>
+
+      <div style="margin-top:14px;">
+        <button class="btn" id="startBtn">Start Assessment →</button>
+      </div>
+    </div>
+
+    <!-- STEP: Quiz -->
+    <div id="quiz" class="card" style="display:none;">
+      <div class="progress"><div id="progressBar"></div></div>
+
+      <div class="meta">
+        <button id="backBtn">← Back</button>
+        <div><span id="qNum">1</span> of <span id="qTotal">11</span></div>
+      </div>
+
+      <h2 id="qText"></h2>
+      <div id="options" style="display:grid;gap:10px;"></div>
+    </div>
+
+    <!-- STEP: Allocation -->
+    <div id="allocation" class="card" style="display:none;">
+      <h2 style="color:var(--primary);margin:6px 0 6px;">Your Current Asset Mix</h2>
+      <p>Enter your current allocation. It must total 100%.</p>
+
+      <div class="row" style="margin-top:14px;">
+        <label>Stocks (%)
+          <input type="number" id="allocStocks" inputmode="numeric" min="0" max="100" placeholder="e.g., 50">
+        </label>
+        <label>Bonds (%)
+          <input type="number" id="allocBonds" inputmode="numeric" min="0" max="100" placeholder="e.g., 40">
+        </label>
+        <label>Short-term Reserves (%)
+          <input type="number" id="allocRes" inputmode="numeric" min="0" max="100" placeholder="e.g., 10">
+        </label>
+      </div>
+
+      <div id="allocError" class="errorBox"></div>
+
+      <div class="row" style="margin-top:14px;">
+        <button class="btn" id="toLeadBtn">Continue →</button>
+        <button class="btn ghost" id="backToQuestionsBtn">Back to Questions</button>
+      </div>
+    </div>
+
+    <!-- STEP: Summary (optional quick view before lead) -->
+    <div id="summary" class="card" style="display:none;">
+      <h2 style="color:var(--primary);margin:6px 0 6px;">Your Suggested Allocation (Preview)</h2>
+      <p>This is based on your answers. You’ll see full results after the lead form.</p>
+
+      <div style="margin-top:12px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:12px;">
+        <div style="font-weight:800;color:#111827;">Risk Profile: <span id="sumProfile"></span></div>
+        <div style="font-weight:800;color:#111827;margin-top:6px;">Risk Score: <span id="sumScore"></span></div>
+
+        <div style="margin-top:12px;font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.6px;text-transform:uppercase;">
+          Suggested Allocation
+        </div>
+
+        <div class="bar">
+          <div class="stocks" id="barS" style="width:0%"></div>
+          <div class="bonds" id="barB" style="width:0%"></div>
+          <div class="res" id="barR" style="width:0%"></div>
+        </div>
+
+        <div class="legend">
+          <span><i class="dot stocks"></i>Stocks: <b id="sumStocks">0%</b></span>
+          <span><i class="dot bonds"></i>Bonds: <b id="sumBonds">0%</b></span>
+          <span><i class="dot res"></i>Reserves: <b id="sumRes">0%</b></span>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;">
+        <button class="btn" id="goLeadNowBtn">Go to Lead Form →</button>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // --------- QUESTIONS + PROFILES (same logic as before) ----------
+  const questions = [
+    { id:"q1", text:"As I withdraw money from these investments, I plan to spend it over a period of...", options:[
+      {label:"2 years or less", value:1},
+      {label:"3–5 years", value:2},
+      {label:"6–10 years", value:3},
+      {label:"11–15 years", value:4},
+      {label:"More than 15 years", value:5},
+    ]},
+    { id:"q2", text:"When making a long-term investment, I plan to keep the money invested for...", options:[
+      {label:"1–2 years", value:1},
+      {label:"3–4 years", value:2},
+      {label:"5–6 years", value:3},
+      {label:"7–8 years", value:4},
+      {label:"More than 8 years", value:5},
+    ]},
+    { id:"q3", text:"When it comes to investing in mutual funds, ETFs, or individual stocks and bonds, I would describe myself as...", options:[
+      {label:"Very inexperienced", value:1},
+      {label:"Somewhat inexperienced", value:2},
+      {label:"Somewhat experienced", value:3},
+      {label:"Experienced", value:4},
+      {label:"Very experienced", value:5},
+    ]},
+    { id:"q4", text:"My current and future income sources (salary, pensions, etc.) are...", options:[
+      {label:"Very unstable", value:1},
+      {label:"Unstable", value:2},
+      {label:"Somewhat stable", value:3},
+      {label:"Stable", value:4},
+      {label:"Very stable", value:5},
+    ]},
+    { id:"q5", text:"I plan to begin taking money from my investments in...", options:[
+      {label:"1 year or less", value:0},
+      {label:"1–2 years", value:1},
+      {label:"3–5 years", value:3},
+      {label:"6–10 years", value:5},
+      {label:"11–15 years", value:6},
+      {label:"More than 15 years", value:7},
+    ]},
+    { id:"q6", text:"During market declines, I tend to sell portions of my riskier assets and invest in safer ones.", options:[
+      {label:"Strongly disagree", value:5},
+      {label:"Disagree", value:4},
+      {label:"Somewhat agree", value:3},
+      {label:"Agree", value:2},
+      {label:"Strongly agree", value:1},
+    ]},
+    { id:"q7", text:"The chart shows the greatest 1-year loss and highest 1-year gain on 3 hypothetical investments of $10,000. I would invest in...", options:[
+      {label:"A (minimal volatility)", value:1},
+      {label:"B (moderate volatility)", value:3},
+      {label:"C (most volatility)", value:5},
+    ]},
+    { id:"q8", text:"From Sep–Oct 2008, bonds lost 4%. If I owned a bond that lost 4% in 2 months, I would...", options:[
+      {label:"Sell all of my bond investment", value:0},
+      {label:"Sell a portion of my bond investment", value:2},
+      {label:"Hold onto the bond investment", value:4},
+      {label:"Buy more of the bond investment", value:5},
+    ]},
+    { id:"q9", text:"I would invest in a mutual fund or ETF based solely on a brief conversation with a friend, co-worker, or relative.", options:[
+      {label:"Strongly disagree", value:5},
+      {label:"Disagree", value:4},
+      {label:"Neither agree nor disagree", value:3},
+      {label:"Agree", value:2},
+      {label:"Strongly agree", value:1},
+    ]},
+    { id:"q10", text:"From Sep–Nov 2008, stocks lost over 31%. If I owned a stock that lost 31% in 3 months, I would...", options:[
+      {label:"Sell all of my stock investment", value:0},
+      {label:"Sell a portion of my stock investment", value:2},
+      {label:"Hold onto the stock investment", value:4},
+      {label:"Buy more of the stock investment", value:5},
+    ]},
+    { id:"q11", text:"Generally, I prefer an investment with little or no ups and downs, and I am willing to accept the lower returns.", options:[
+      {label:"Strongly disagree", value:5},
+      {label:"Disagree", value:4},
+      {label:"Neither agree nor disagree", value:3},
+      {label:"Agree", value:2},
+      {label:"Strongly agree", value:1},
+    ]},
+  ];
+
+  const profiles = [
+    { min:0,  max:15, name:"Conservative Protector", stocks:20, bonds:80, reserves:0 },
+    { min:16, max:21, name:"Cautious Planner",       stocks:30, bonds:70, reserves:0 },
+    { min:22, max:27, name:"Balanced Moderate",      stocks:40, bonds:60, reserves:0 },
+    { min:28, max:33, name:"Balanced Builder",       stocks:50, bonds:50, reserves:0 },
+    { min:34, max:39, name:"Growth Seeker",          stocks:60, bonds:40, reserves:0 },
+    { min:40, max:45, name:"Dynamic Accelerator",    stocks:80, bonds:20, reserves:0 },
+    { min:46, max:100,name:"Aggressive Pioneer",     stocks:100,bonds:0,  reserves:0 },
+  ];
+
+  function getProfile(score){
+    return profiles.find(p => score>=p.min && score<=p.max) || profiles[0];
+  }
+  function clampPct(v){
+    const n = Number(v);
+    if(!Number.isFinite(n)) return 0;
+    return Math.max(0, Math.min(100, Math.round(n)));
+  }
+  function totalPct(a){ return clampPct(a.stocks)+clampPct(a.bonds)+clampPct(a.reserves); }
+
+  // --------- STATE ----------
+  let idx = 0;
+  const answers = {}; // {q1: points,...}
+
+  // --------- ELEMENTS ----------
+  const elWelcome = document.getElementById("welcome");
+  const elQuiz = document.getElementById("quiz");
+  const elAlloc = document.getElementById("allocation");
+  const elSummary = document.getElementById("summary");
+
+  const progressBar = document.getElementById("progressBar");
+  const qText = document.getElementById("qText");
+  const optionsWrap = document.getElementById("options");
+  const qNum = document.getElementById("qNum");
+  const qTotal = document.getElementById("qTotal");
+
+  const allocStocks = document.getElementById("allocStocks");
+  const allocBonds = document.getElementById("allocBonds");
+  const allocRes = document.getElementById("allocRes");
+  const allocError = document.getElementById("allocError");
+
+  const sumProfile = document.getElementById("sumProfile");
+  const sumScore = document.getElementById("sumScore");
+  const sumStocks = document.getElementById("sumStocks");
+  const sumBonds = document.getElementById("sumBonds");
+  const sumRes = document.getElementById("sumRes");
+  const barS = document.getElementById("barS");
+  const barB = document.getElementById("barB");
+  const barR = document.getElementById("barR");
+
+  qTotal.textContent = String(questions.length);
+
+  // --------- UI HELPERS ----------
+  function show(step){
+    elWelcome.style.display = step==="welcome" ? "" : "none";
+    elQuiz.style.display = step==="quiz" ? "" : "none";
+    elAlloc.style.display = step==="allocation" ? "" : "none";
+    elSummary.style.display = step==="summary" ? "" : "none";
+  }
+
+  function renderQuestion(){
+    const q = questions[idx];
+    qNum.textContent = String(idx+1);
+    qText.textContent = q.text;
+
+    const pct = Math.round((idx / questions.length) * 100);
+    progressBar.style.width = pct + "%";
+
+    optionsWrap.innerHTML = "";
+    q.options.forEach((opt) => {
+      const label = document.createElement("label");
+      label.className = "option";
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = "opt";
+      input.value = String(opt.value);
+      if (answers[q.id] === opt.value) input.checked = true;
+
+      input.addEventListener("change", () => {
+        answers[q.id] = opt.value;
+        if (idx < questions.length - 1){
+          idx++;
+          renderQuestion();
+        } else {
+          show("allocation");
+        }
+      });
+
+      label.appendChild(input);
+      label.appendChild(document.createTextNode(opt.label));
+      optionsWrap.appendChild(label);
+    });
+  }
+
+  function calcScore(){
+    let s = 0;
+    for (const k in answers) s += Number(answers[k] || 0);
+    return s;
+  }
+
+  function buildResults(){
+    const riskScore = calcScore();
+    const prof = getProfile(riskScore);
+
+    let currentAllocation = {
+      stocks: clampPct(allocStocks.value),
+      bonds: clampPct(allocBonds.value),
+      reserves: clampPct(allocRes.value),
+    };
+    if (totalPct(currentAllocation) === 0) currentAllocation = {stocks:0,bonds:0,reserves:100};
+
+    return {
+      tool: "risk-questionnaire",
+      riskScore,
+      riskProfile: prof.name,
+      suggestedAllocation: { stocks: prof.stocks, bonds: prof.bonds, reserves: prof.reserves },
+      currentAllocation,
+      answers: { ...answers }
+    };
+  }
+
+  function showAllocError(msg){
+    allocError.textContent = msg;
+    allocError.style.display = msg ? "block" : "none";
+  }
+
+  function updateSummary(){
+    const results = buildResults();
+    sumProfile.textContent = results.riskProfile;
+    sumScore.textContent = String(results.riskScore);
+
+    sumStocks.textContent = results.suggestedAllocation.stocks + "%";
+    sumBonds.textContent = results.suggestedAllocation.bonds + "%";
+    sumRes.textContent = results.suggestedAllocation.reserves + "%";
+
+    barS.style.width = results.suggestedAllocation.stocks + "%";
+    barB.style.width = results.suggestedAllocation.bonds + "%";
+    barR.style.width = results.suggestedAllocation.reserves + "%";
+  }
+
+  // --------- EVENTS ----------
+  document.getElementById("startBtn").addEventListener("click", () => {
+    idx = 0;
+    show("quiz");
+    renderQuestion();
+  });
+
+  document.getElementById("backBtn").addEventListener("click", () => {
+    if (idx === 0) {
+      show("welcome");
+    } else {
+      idx--;
+      renderQuestion();
+    }
+  });
+
+  document.getElementById("backToQuestionsBtn").addEventListener("click", () => {
+    showAllocError("");
+    show("quiz");
+    idx = questions.length - 1;
+    renderQuestion();
+  });
+
+  document.getElementById("toLeadBtn").addEventListener("click", () => {
+    showAllocError("");
+
+    const a = {
+      stocks: clampPct(allocStocks.value),
+      bonds: clampPct(allocBonds.value),
+      reserves: clampPct(allocRes.value),
+    };
+    const t = totalPct(a);
+    if (t !== 100 && t !== 0){
+      showAllocError("Your current allocation must total 100%.");
+      return;
+    }
+
+    // Store results and go to lead page
+    const results = buildResults();
+    localStorage.setItem("hoxton_risk_results", JSON.stringify(results));
+
+    // Optional preview step (keeps flow clean)
+    updateSummary();
+    show("summary");
+  });
+
+  document.getElementById("goLeadNowBtn").addEventListener("click", () => {
+    window.location.href = "lead.html";
+  });
+
+  // Start at welcome
+  show("welcome");
+</script>
+</body>
+</html>
