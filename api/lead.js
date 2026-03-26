@@ -27,27 +27,24 @@ export default async function handler(req, res) {
     const orttoBody = {
       activities: [
         {
-          activity_id: "act:cm:websiteformsubmit",
-          attributes: {
-            "str:cm:first-name": data.firstName,
-            "str:cm:last-name": data.lastName,
-            "str:cm:email": data.email,
-            "phn:cm:phone": { c: phoneCode, n: phoneNumber },
-            "str:cm:country": data.country,
-            "str:cm:answers": JSON.stringify({
-              tool: "risk-questionnaire",
-
-              // keep everything from the quiz in one blob
-              riskScore: results.riskScore || 0,
-              riskProfile: results.riskProfile || "",
-              suggestedAllocation: results.suggestedAllocation || { stocks: 0, bonds: 0, reserves: 0 },
-              currentAllocation: results.currentAllocation || { stocks: 0, bonds: 0, reserves: 0 },
-              answers: results.answers || {},
-
-              // optional: branch currency from lead page
-              currency: data.currency || null
-            }),
-          },
+            attributes: {
+          "str:cm:first-name-user-input": data.firstName,
+          "str:cm:last-name-user-input": data.lastName,
+          "str:cm:email": data.email,
+          "str:cm:country-of-residence-user-input": data.country,
+          "phn:cm:mobile-number-user-input": { c: phoneCode, n: phoneNumber },
+        
+          // put ALL tool answers/results here as JSON string
+          "str:cm:your-questions-user-input-on-the-event-forms": JSON.stringify({
+            tool: "risk-questionnaire",
+            currency: data.currency || null,
+            riskScore: results.riskScore || 0,
+            riskProfile: results.riskProfile || "",
+            suggestedAllocation: results.suggestedAllocation || { stocks: 0, bonds: 0, reserves: 0 },
+            currentAllocation: results.currentAllocation || { stocks: 0, bonds: 0, reserves: 0 },
+            answers: results.answers || {}
+          })
+      },
           fields: {
             "str::email": data.email,
           },
