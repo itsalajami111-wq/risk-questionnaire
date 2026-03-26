@@ -20,51 +20,59 @@ export default async function handler(req, res) {
       return res.status(400).json({ ok: false, error: "Missing data.email" });
     }
 
+    // Ortto expects phone country code WITHOUT +
     const phoneCode = String(data.phoneCode || "").replace("+", "").trim();
     const phoneNumber = String(data.phoneNumber || "").trim();
 
-    // ✅ YOUR magnet activity template (same as you provided)
+    // ✅ Must match your Ortto activity schema EXACTLY
     const orttoBody = {
       activities: [
         {
-            attributes: {
-          "str:cm:first-name-user-input": data.firstName,
-          "str:cm:last-name-user-input": data.lastName,
-          "str:cm:email": data.email,
-          "str:cm:country-of-residence-user-input": data.country,
-          "phn:cm:mobile-number-user-input": { c: phoneCode, n: phoneNumber },
-        
-          // put ALL tool answers/results here as JSON string
-          "str:cm:your-questions-user-input-on-the-event-forms": JSON.stringify({
-            tool: "risk-questionnaire",
-            currency: data.currency || null,
-            riskScore: results.riskScore || 0,
-            riskProfile: results.riskProfile || "",
-            suggestedAllocation: results.suggestedAllocation || { stocks: 0, bonds: 0, reserves: 0 },
-            currentAllocation: results.currentAllocation || { stocks: 0, bonds: 0, reserves: 0 },
-            answers: results.answers || {}
-          })
-      },
+          activity_id: "act:cm:websiteformsubmit",
+          attributes: {
+            // exact keys from Ortto snippet
+            "phn:cm:mobile-number-user-input": { c: phoneCode, n: phoneNumber },
+            "str:cm:country-of-residence-user-input": data.country || "",
+            "str:cm:email": data.email || "",
+            "str:cm:first-name-user-input": data.firstName || "",
+            "str:cm:last-name-user-input": data.lastName || "",
+
+            // store tool data inside this existing field
+            "str:cm:your-questions-user-input-on-the-event-forms": JSON.stringify({
+              tool: "risk-questionnaire",
+              currency: data.currency || null,
+
+              riskScore: results.riskScore || 0,
+              riskProfile: results.riskProfile || "",
+              suggestedAllocation: results.suggestedAllocation || { stocks: 0, bonds: 0, reserves: 0 },
+              currentAllocation: results.currentAllocation || { stocks: 0, bonds: 0, reserves: 0 },
+              answers: results.answers || {}
+            }),
+
+            // optional fields that exist in the schema (safe to send empty)
+            "str:cm:source-page-url": data.sourcePageUrl || "",
+            "str:cm:topic-page-title": data.topicPageTitle || ""
+          },
           fields: {
-            "str::email": data.email,
+            "str::email": data.email
           },
           location: {
             source_ip: req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || null,
             custom: null,
-            address: null,
-          },
-        },
+            address: null
+          }
+        }
       ],
-      merge_by: ["str::email"],
+      merge_by: ["str::email"]
     };
 
     const r = await fetch(ORTTO_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-Api-Key": ORTTO_API_KEY,
+        "X-Api-Key": ORTTO_API_KEY
       },
-      body: JSON.stringify(orttoBody),
+      body: JSON.stringify(orttoBody)
     });
 
     const text = await r.text();
@@ -74,7 +82,7 @@ export default async function handler(req, res) {
         ok: false,
         error: "Ortto error",
         orttoStatus: r.status,
-        orttoResponse: text,
+        orttoResponse: text
       });
     }
 
